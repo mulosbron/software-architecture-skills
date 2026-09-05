@@ -5,6 +5,11 @@ description: Use when you need to divide a large class or a set of closely relat
 
 # Applying Bridge Pattern
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Decouples an abstraction from its implementation so that the two can vary independently, avoiding a Cartesian product of subclasses (class explosion).
 
@@ -16,3 +21,6 @@ Decouples an abstraction from its implementation so that the two can vary indepe
 
 ## Anti-Pattern to Avoid
 Don't use subclassing for every combination of dimensions (e.g., `RedCircle`, `BlueCircle`). Use Bridge to separate Shape and Color.
+
+
+

@@ -5,6 +5,11 @@ description: Use when you need to isolate resources (like thread pools) so a fai
 
 # Applying Bulkhead Pattern
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Partitions application resources into isolated pools so that if one pool is exhausted (e.g., due to a slow dependency), the others remain unaffected.
 
@@ -15,3 +20,6 @@ Partitions application resources into isolated pools so that if one pool is exha
 
 ## Anti-Pattern to Avoid
 Don't use a single global thread pool for all outgoing network calls in a microservice.
+
+
+

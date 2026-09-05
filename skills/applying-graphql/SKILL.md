@@ -5,6 +5,11 @@ description: Use when frontend clients need flexible, complex data querying with
 
 # Applying GraphQL
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 GraphQL is a query language for APIs that allows clients to request exactly the data they need from a single endpoint.
 
@@ -16,3 +21,6 @@ GraphQL is a query language for APIs that allows clients to request exactly the 
 
 ## Anti-Pattern to Avoid
 Don't use GraphQL for simple CRUD applications where REST caching (via CDNs) would be much more effective. GraphQL makes HTTP-level caching difficult.
+
+
+

@@ -5,6 +5,11 @@ description: Use when deciding between REST, GraphQL, gRPC, and WebSockets for a
 
 # Choosing an API Architecture Style
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Different API styles solve different problems. Choosing the right one is critical for system performance and developer experience.
 
@@ -16,3 +21,6 @@ Different API styles solve different problems. Choosing the right one is critica
 
 ## Anti-Pattern to Avoid
 Don't blindly choose the newest tech (like GraphQL) if your API simply serves static data that would benefit massively from standard HTTP GET caching.
+
+
+

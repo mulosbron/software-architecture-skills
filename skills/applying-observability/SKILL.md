@@ -5,6 +5,11 @@ description: Use when designing a system to ensure issues can be detected, diagn
 
 # Applying Observability
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Observability is the ability to understand a system's internal state based on its external outputs. It answers the "why" and "where" when things go wrong, moving beyond basic monitoring.
 
@@ -15,3 +20,6 @@ Observability is the ability to understand a system's internal state based on it
 
 ## Anti-Pattern to Avoid
 Don't rely solely on unstructured, plain-text log files in a microservices environment. Without a central `Trace ID`, it's impossible to follow a request's path across 10 different services.
+
+
+

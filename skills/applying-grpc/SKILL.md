@@ -5,6 +5,11 @@ description: Use when you need high-performance, low-latency communication betwe
 
 # Applying gRPC
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 gRPC is a high-performance RPC framework by Google. It uses HTTP/2 for transport and Protocol Buffers (Protobuf) for binary serialization.
 
@@ -16,3 +21,6 @@ gRPC is a high-performance RPC framework by Google. It uses HTTP/2 for transport
 
 ## Anti-Pattern to Avoid
 Don't use gRPC as the primary public-facing API for web browsers, as browsers have limited support for raw HTTP/2 framing without proxies (gRPC-Web).
+
+
+

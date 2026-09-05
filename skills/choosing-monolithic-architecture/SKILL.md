@@ -5,6 +5,11 @@ description: Use when starting a new project, building an MVP, or deciding if mi
 
 # Choosing Monolithic Architecture
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Monoliths are not an anti-pattern. They are the most efficient starting point for most projects due to their simplicity in development, deployment, and testing.
 
@@ -17,3 +22,6 @@ Choose a Monolithic Architecture when:
 
 ## Anti-Pattern to Avoid
 Don't use a monolith if different parts of the system require wildly different scaling (e.g., heavy video processing vs simple text serving). Avoid 'Technology Stack Lock-in' if you foresee needing multiple languages.
+
+
+

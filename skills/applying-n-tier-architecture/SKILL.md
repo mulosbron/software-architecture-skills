@@ -5,6 +5,11 @@ description: Use when structuring an application into logical layers to separate
 
 # Applying N-Tier (Layered) Architecture
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 N-Tier architecture separates the application into horizontal layers, isolating concerns to improve testability and maintainability. The most common is the 3-Tier architecture.
 
@@ -17,3 +22,6 @@ N-Tier architecture separates the application into horizontal layers, isolating 
 
 ## Anti-Pattern to Avoid
 Never allow the Data Access Layer to call the Business Logic Layer. Never put database SQL queries or business rules inside the Presentation (Controller) Layer.
+
+
+

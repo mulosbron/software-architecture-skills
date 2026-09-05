@@ -5,6 +5,11 @@ description: Use when you need standard backend capabilities (Auth, DB, Storage)
 
 # Applying Backend-as-a-Service (BaaS)
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 BaaS provides fully managed, ready-to-use backend services so frontend developers can focus on user experience without writing boilerplate server code.
 
@@ -16,3 +21,6 @@ BaaS provides fully managed, ready-to-use backend services so frontend developer
 
 ## Anti-Pattern to Avoid
 Don't reinvent the wheel by deploying and managing your own MongoDB or Keycloak instances on EC2 if a BaaS solution fits your startup's needs.
+
+
+

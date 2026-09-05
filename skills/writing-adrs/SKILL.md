@@ -5,6 +5,11 @@ description: Use when deciding on a major architectural change, technology selec
 
 # Writing Architecture Decision Records (ADRs)
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 An Architecture Decision Record (ADR) is a short text file that captures an important architectural decision made along with its context and consequences. If a decision is not documented, it effectively doesn't exist, leading to "architectural drift".
 
@@ -25,3 +30,6 @@ Every ADR must follow this simple structure:
 ## Common Mistakes
 - **Documenting only the "What"**: Always document the "Why" and the "Context".
 - **Ignoring negative consequences**: Every decision has a trade-off. If you don't list negatives (e.g., "increased operational complexity"), the ADR is incomplete.
+
+
+

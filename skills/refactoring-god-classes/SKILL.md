@@ -5,6 +5,11 @@ description: Use when breaking down a massive, tightly-coupled class (God Class)
 
 # Refactoring God Classes
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 A "God Class" is an anti-pattern where a single class controls too many processes (SRP violation), depends on concrete implementations (DIP violation), and uses hardcoded branching (OCP violation). Refactoring it requires a systematic approach.
 
@@ -26,3 +31,6 @@ A "God Class" is an anti-pattern where a single class controls too many processe
 - Remove all `new` keywords for services inside the God Class.
 - Inject the isolated interfaces via the constructor (Dependency Injection).
 - The former God Class becomes a lightweight orchestrator/coordinator.
+
+
+

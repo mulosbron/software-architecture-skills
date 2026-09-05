@@ -5,6 +5,11 @@ description: Use when you have multiple algorithms for a specific task and want 
 
 # Applying Strategy Pattern
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Defines a family of algorithms, encapsulates each one, and makes them interchangeable.
 
@@ -16,3 +21,6 @@ Defines a family of algorithms, encapsulates each one, and makes them interchang
 
 ## Anti-Pattern to Avoid
 Don't hardcode algorithms inside the Context. Extract them so they can vary independently.
+
+
+

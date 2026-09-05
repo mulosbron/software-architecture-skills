@@ -5,6 +5,11 @@ description: Use when the business logic needs to work with different families o
 
 # Applying Abstract Factory Pattern
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Lets you produce families of related objects without specifying their concrete classes. Ensures products from the same family are compatible.
 
@@ -15,3 +20,6 @@ Lets you produce families of related objects without specifying their concrete c
 
 ## Anti-Pattern to Avoid
 Don't use it if you only have one family of products or products aren't related. It adds unnecessary complexity.
+
+
+

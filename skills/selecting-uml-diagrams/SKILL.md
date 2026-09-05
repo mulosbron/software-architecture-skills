@@ -5,6 +5,11 @@ description: Use when visualizing system behavior, object structure, workflows, 
 
 # Selecting UML Diagrams
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 UML diagrams provide a standardized way to visualize both the structural and behavioral aspects of a system. Using the right diagram prevents communication gaps.
 
@@ -29,3 +34,6 @@ When creating Class Diagrams, be precise with relationships:
 ## Use Case Diagram Relationships
 - **Include**: Mandatory sub-step (e.g., "Place Order" *includes* "Process Payment").
 - **Extend**: Optional behavior under specific conditions (e.g., "Process Payment" is *extended by* "Apply Coupon").
+
+
+

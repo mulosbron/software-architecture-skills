@@ -121,6 +121,14 @@ This directory contains specialized software architecture skills derived from be
 | **Applying Template Method** | `skills/applying-template-method-pattern/SKILL.md` | User needs to define the skeleton of an algorithm but let subclasses override steps |
 | **Applying Visitor** | `skills/applying-visitor-pattern/SKILL.md` | User needs to add new operations to an object structure without modifying the objects |
 
+## Agent Execution Flow (IMPORTANT)
+
+When a user requests assistance using these software architecture skills, **DO NOT generate a complete architecture or solution immediately**. Instead, follow this step-by-step flow:
+
+1. **Information Gathering (Ask First):** Ask the user clarifying questions to understand their exact needs. Determine if they are designing a brand new system, refactoring an existing one, or just asking a theoretical question. Uncover their constraints (budget, team size, timeline, scale).
+2. **Context Scanning:** Use your available tools (`list_dir`, `view_file`, or `grep_search`) to deeply scan the user's workspace and folders. Investigate existing code, infrastructure files (Docker/K8s), and documentation to understand the current architecture before proposing changes.
+3. **Analyze & Propose:** Based on the user's answers and the workspace context, use the appropriate `SKILL.md` files to formulate your architectural strategy, ADRs, or refactoring plans.
+
 ## How to Use These Skills
 
 ### Method 1: Automatic Context Loading

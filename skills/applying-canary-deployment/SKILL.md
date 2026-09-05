@@ -5,6 +5,11 @@ description: Use when you want to minimize the "blast radius" of a potential bug
 
 # Applying Canary Deployment
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Named after the "canary in a coal mine", this strategy routes a small percentage of real user traffic to a new version to test its stability before a full rollout.
 
@@ -16,3 +21,6 @@ Named after the "canary in a coal mine", this strategy routes a small percentage
 
 ## Anti-Pattern to Avoid
 Don't attempt a Canary deployment without a mature, automated observability stack. If you can't automatically detect that the 5% of users are experiencing errors, the strategy fails.
+
+
+

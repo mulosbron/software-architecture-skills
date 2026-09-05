@@ -5,6 +5,11 @@ description: Use when user experience is impacted by the initial delay of bootin
 
 # Mitigating Serverless Cold Starts
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Cold starts occur when a FaaS platform provisions a new container to handle an event after a period of inactivity.
 
@@ -15,3 +20,6 @@ Cold starts occur when a FaaS platform provisions a new container to handle an e
 
 ## Anti-Pattern to Avoid
 Don't ignore cold starts in user-facing synchronous APIs. A 3-second cold start on a login endpoint is terrible UX.
+
+
+

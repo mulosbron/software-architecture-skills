@@ -5,6 +5,11 @@ description: Use when a microservice calls another service and you need to preve
 
 # Applying Circuit Breaker Pattern
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Prevents a network or service failure from cascading to other services. It stops sending requests to a failing service and returns a fallback response immediately.
 
@@ -16,3 +21,6 @@ Prevents a network or service failure from cascading to other services. It stops
 
 ## Anti-Pattern to Avoid
 Don't rely solely on HTTP timeouts. A slow service will exhaust thread pools; a Circuit Breaker fails fast.
+
+
+

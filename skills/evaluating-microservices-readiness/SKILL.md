@@ -5,6 +5,11 @@ description: Use when a user wants to start a new project with Microservices, or
 
 # Evaluating Microservices Readiness
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Microservices solve organizational scaling and extreme traffic problems, but introduce massive complexity (network latency, distributed transactions, tracing).
 
@@ -21,3 +26,6 @@ If migrating, use the **Strangler Fig** pattern instead of a big-bang rewrite.
 
 ## Anti-Pattern to Avoid
 Avoid starting with Microservices for MVP projects. Never build a Distributed Monolith.
+
+
+

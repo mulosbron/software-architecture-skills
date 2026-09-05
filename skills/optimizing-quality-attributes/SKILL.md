@@ -5,6 +5,11 @@ description: Use when designing systems that need to meet specific non-functiona
 
 # Optimizing Quality Attributes
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Quality Attributes (Non-Functional Requirements) define *how well* a system operates. They require specific architectural tactics to satisfy.
 
@@ -29,3 +34,6 @@ Quality Attributes (Non-Functional Requirements) define *how well* a system oper
 - **High Cohesion, Low Coupling**: Modules should do one thing and minimize dependencies on others.
 - **Dependency Inversion**: Code against interfaces, not concrete implementations.
 - **Mocking**: Inject mock versions of external services (Emails, Payments) during automated testing to ensure isolation.
+
+
+

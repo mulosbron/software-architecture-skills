@@ -5,6 +5,11 @@ description: Use when deploying and managing hundreds or thousands of containeri
 
 # Applying Container Orchestration (Kubernetes)
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 While Docker packages a single application into a portable container, a Container Orchestrator (like Kubernetes) manages clusters of these containers, ensuring high availability, scaling, and networking.
 
@@ -15,3 +20,6 @@ While Docker packages a single application into a portable container, a Containe
 
 ## Anti-Pattern to Avoid
 Don't run raw Docker containers manually via `docker run` on production servers. You will lose automatic failover, scaling, and rolling updates.
+
+
+

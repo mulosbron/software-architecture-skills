@@ -5,6 +5,11 @@ description: Use when choosing an architectural style, resolving conflicting non
 
 # Balancing Architectural Tradeoffs
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Architecture is about making trade-offs between conflicting Business Goals and Architectural Drivers (Quality Attributes). A perfect architecture does not exist; only the most "fit-for-purpose" one does.
 
@@ -31,3 +36,6 @@ Do not force an architecture that conflicts with the team structure.
 ## Red Flags - STOP and Re-evaluate
 - Trying to build a highly scalable microservices architecture for an unproven MVP with 3 developers (Over-engineering).
 - Keeping a massive monolith when 10 different teams are stepping on each other's toes (Under-engineering).
+
+
+

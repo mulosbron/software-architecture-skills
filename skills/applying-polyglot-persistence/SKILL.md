@@ -5,6 +5,11 @@ description: Use when designing a system where a single database type is insuffi
 
 # Applying Polyglot Persistence
 
+## Agent Execution Flow (IMPORTANT)
+1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
+2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
+3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+
 ## Overview
 Polyglot Persistence means using different database technologies for different parts of an application, picking the best tool for each specific job.
 
@@ -17,3 +22,6 @@ Polyglot Persistence means using different database technologies for different p
 
 ## Anti-Pattern to Avoid
 Don't force every service to use PostgreSQL just because it's the company standard, if a specific service handles graph-like recommendation queries.
+
+
+
