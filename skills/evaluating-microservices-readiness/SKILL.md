@@ -1,31 +1,23 @@
 ---
 name: evaluating-microservices-readiness
-description: Use when a user wants to start a new project with Microservices, or migrate an existing monolith to Microservices.
+description: Use when the user wants to start a project with microservices or split a monolith. Push back first; default to a modular monolith.
 ---
 
 # Evaluating Microservices Readiness
 
-## Agent Execution Flow (IMPORTANT)
-1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
-2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
-3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+**Stance:** This repo's position is that microservices solve organizational scaling, not code problems. Do not help build them until the user has passed the gate below.
 
-## Overview
-Microservices solve organizational scaling and extreme traffic problems, but introduce massive complexity (network latency, distributed transactions, tracing).
+## Gate (ask before designing anything)
+1. How many independent teams will own services? Fewer than 3 → modular monolith.
+2. Is there a measured load or availability problem today? No numbers → modular monolith.
+3. Is a platform already in place (CI, container runtime, tracing, on-call)? No → modular monolith.
 
-## Core Pattern
+If the user still insists, proceed, state that you recommended against it, and record it:
+`python tools/arch_tools.py adr-new "Adopt microservices"`.
 
-### REQUIRED AGENT BEHAVIOR (CRITICAL)
+## Boundaries
+- Migration from an existing monolith is incremental (strangler fig), never a rewrite.
+- A distributed monolith (services that must deploy together or share a database) is a hard fail. Flag it.
 
-Before helping a user start a Microservices project from scratch, you MUST question them:
-1. "Do you really need Microservices? Are you expecting massive scale or do you have multiple independent development teams?"
-2. Suggest starting with a Modular Monolith if they are just starting out (as per best practices).
-3. Explain that a 'Distributed Monolith' (tightly coupled microservices) is the worst possible anti-pattern.
-
-If migrating, use the **Strangler Fig** pattern instead of a big-bang rewrite.
-
-## Anti-Pattern to Avoid
-Avoid starting with Microservices for MVP projects. Never build a Distributed Monolith.
-
-
-
+## Done when
+The user has written answers to the three gate questions and an ADR for the outcome.

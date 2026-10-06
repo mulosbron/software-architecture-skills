@@ -1,26 +1,22 @@
 ---
 name: choosing-database-type
-description: Use when deciding between SQL and different types of NoSQL databases for a project.
+description: Use when picking a database for a service or deciding whether to split storage.
 ---
 
-# Choosing Database Type (SQL vs NoSQL)
+# Choosing Database Type
 
-## Agent Execution Flow (IMPORTANT)
-1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
-2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
-3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+**Default in this repo:** PostgreSQL. Deviate only with a measured reason.
 
-## Overview
-Different data requirements dictate different database types based on the CAP Theorem and ACID/BASE guarantees.
+## Reasons that justify deviating
+- Hot-path lookups measured beyond what Postgres handles → Redis in front; Postgres stays the source of truth.
+- Append-only, high-volume time series → a time-series store.
+- Traversal-heavy queries (3+ hops) that are slow in SQL → graph database.
+- Schema that genuinely varies per record and is never joined → document store.
 
-## Core Pattern
-1. **SQL (PostgreSQL, MySQL)**: Use for strong ACID transactions and relational data (e.g., billing, orders).
-2. **NoSQL Document (MongoDB)**: Use for flexible schemas and storing complex JSON objects (e.g., product catalogs).
-3. **NoSQL Key-Value (Redis, DynamoDB)**: Use for ultra-fast, simple lookups (e.g., sessions, caching).
-4. **NoSQL Graph (Neo4j)**: Use for highly connected data and complex relationships (e.g., recommendation engines).
+## Boundaries
+- One service, one database. No shared tables across services.
+- Money, orders, auth: relational and ACID, no exceptions.
+- Each extra engine adds backups, ops, and failure modes. Say so in the ADR.
 
-## Anti-Pattern to Avoid
-Don't use a relational database for massive time-series event logging, and don't use a NoSQL Document store for critical banking transactions requiring strict ACID compliance.
-
-
-
+## Done when
+Engine chosen, owning service named, ADR written.

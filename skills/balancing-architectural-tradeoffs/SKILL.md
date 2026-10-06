@@ -1,41 +1,21 @@
 ---
 name: balancing-architectural-tradeoffs
-description: Use when choosing an architectural style, resolving conflicting non-functional requirements, or transitioning a project across growth phases
+description: Use when choosing between architectural styles or weighing quality attributes (speed-to-market vs scale, consistency vs availability).
 ---
 
 # Balancing Architectural Tradeoffs
 
-## Agent Execution Flow (IMPORTANT)
-1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
-2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
-3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+**Goal:** A recommendation tied to the user's stage, team shape, and the one quality attribute they will not compromise.
 
-## Overview
-Architecture is about making trade-offs between conflicting Business Goals and Architectural Drivers (Quality Attributes). A perfect architecture does not exist; only the most "fit-for-purpose" one does.
+## Ask these, nothing else
+1. Stage: unproven idea, growing, or established?
+2. Team: how many people, how many teams?
+3. The one non-negotiable: latency, uptime, consistency, cost, or ship date?
 
-## Core Pattern: Phase-Based Design
+## Defaults this repo takes
+- Unproven idea or single team → monolith (`designing-modular-monoliths`).
+- Multiple autonomous teams with a platform → services are on the table (`evaluating-microservices-readiness`).
+- Conway's law wins. Do not propose a structure the org cannot staff.
 
-### Startup Phase (Minimum Viable Product)
-- **Primary Business Goal**: Time-to-Market, validation of idea.
-- **Primary Architectural Driver**: Speed of development, simplicity, low cost.
-- **Architectural Choice**: **Monolithic Architecture**.
-- **Trade-off**: Sacrificing long-term scalability and strict modularity for rapid delivery.
-
-### Growth Phase
-- **Primary Business Goal**: Handle millions of users, ensure 99.99% uptime.
-- **Primary Architectural Driver**: Scalability, Reliability, Team Autonomy.
-- **Architectural Choice**: **Microservices Architecture**.
-- **Trade-off**: Sacrificing simplicity and operational ease. Absorbing the high complexity of distributed systems (Event-driven communication, Kubernetes) to achieve scale.
-
-## Conway's Law
-Always consider the organizational structure. "Organizations design systems that mirror their own communication structure."
-- Small, single team -> Monolith.
-- Multiple autonomous squads -> Microservices.
-Do not force an architecture that conflicts with the team structure.
-
-## Red Flags - STOP and Re-evaluate
-- Trying to build a highly scalable microservices architecture for an unproven MVP with 3 developers (Over-engineering).
-- Keeping a massive monolith when 10 different teams are stepping on each other's toes (Under-engineering).
-
-
-
+## Done when
+The answer names what is sacrificed, and the decision is recorded with `arch_tools.py adr-new`.

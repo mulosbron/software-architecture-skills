@@ -1,26 +1,23 @@
 ---
 name: designing-modular-monoliths
-description: Use when structuring a new monolithic application to prevent it from becoming a tangled mess, or when preparing for a future microservices migration.
+description: Use when structuring a new application or carving modules out of a tangled codebase.
 ---
 
 # Designing Modular Monoliths
 
-## Agent Execution Flow (IMPORTANT)
-1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
-2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
-3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+**Goal:** One deployable, with module boundaries strict enough that any module could later be extracted without a rewrite.
 
-## Overview
-A Modular Monolith logically separates the codebase into distinct functional modules (business capabilities) with high internal cohesion and loose coupling, while still deploying as a single unit.
+## Rules this repo enforces
+- One top-level directory per business capability (orders, catalog, billing), not per technical layer.
+- A module exposes one public entry point (a package, `api/`, or `__init__`). Everything else is internal.
+- Modules never read each other's tables. Cross-module data goes through the public entry point or an in-process event.
+- Shared code lives in a small `shared/` kernel with no business logic.
 
-## Core Pattern
-1. Identify distinct business domains (e.g., Catalog, Orders, Users).
-2. Create separate logical modules for each domain.
-3. Enforce strict boundaries between modules using interfaces; modules must not directly access each other's databases.
-4. Deploy everything together as a single executable or package.
+Check it: `python tools/arch_tools.py check-module-boundaries <src-dir>` lists imports that reach into another module's internals.
 
-## Anti-Pattern to Avoid
-Avoid the 'Distributed Monolith' (modules running on separate servers but tightly coupled). Avoid the 'Big Ball of Mud' (no module boundaries).
+## Boundaries
+- Do not put a network between modules. That is a distributed monolith.
+- A God Class inside a module is handled by `refactoring-god-classes`.
 
-
-
+## Done when
+Module list exists, each has a named public entry point, and the boundary check passes.

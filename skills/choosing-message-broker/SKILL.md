@@ -1,24 +1,19 @@
 ---
 name: choosing-message-broker
-description: Use when deciding between RabbitMQ and Apache Kafka for an Event-Driven Architecture.
+description: Use when adding asynchronous messaging or choosing between RabbitMQ and Kafka.
 ---
 
-# Choosing a Message Broker (RabbitMQ vs Kafka)
+# Choosing a Message Broker
 
-## Agent Execution Flow (IMPORTANT)
-1. **Information Gathering:** Ask clarifying questions to determine context and constraints before proposing a solution.
-2. **Context Scanning:** Scan the workspace (`list_dir`, `view_file`) to understand current architecture and code.
-3. **Analyze & Propose:** Once context is fully understood, formulate your architecture strategy or design pattern recommendation.
+**Default in this repo:** No broker until a synchronous call is shown to be the bottleneck. Then RabbitMQ for work queues, Kafka only for replayable event streams.
 
-## Overview
-Different message brokers solve different problems. RabbitMQ focuses on flexible message routing, while Kafka focuses on high-throughput, persistent event streaming.
+## Decide with one question
+Do consumers need to re-read history (replay, audit, late joiners)? Yes → Kafka. No → RabbitMQ.
 
-## Core Pattern
-1. Use **RabbitMQ** (Smart Broker) if you need complex routing (direct, topic, fanout exchanges), task queues, and instant message deletion after processing.
-2. Use **Apache Kafka** (Smart Consumer) if you need event sourcing, log aggregation, real-time analytics, high throughput, and the ability to replay historical events (messages are stored on disk).
+## Boundaries
+- Every message has a schema file committed next to its producer.
+- Every consumer is idempotent. Document the dedupe key.
+- Dead-letter handling is designed before go-live, not after the first incident.
 
-## Anti-Pattern to Avoid
-Don't use Kafka just for simple task queues or traditional microservice async RPC. Don't use RabbitMQ for massive real-time data lakes.
-
-
-
+## Done when
+Broker chosen, first topic or queue named with its schema, retention and DLQ policy stated, ADR written.
