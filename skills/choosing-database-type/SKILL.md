@@ -16,6 +16,8 @@ description: Use when picking a database for a service or deciding whether to sp
 ## Boundaries
 - One service, one database. No shared tables across services.
 - Money, orders, auth: relational and ACID, no exceptions.
+- Read-after-write critical paths (balances, bookings, payments): read from primary or consensus store; replicas serve failover or stale-tolerant reads.
+- If write/storage math forces sharding: shard by an even-distribution key using consistent hashing with virtual nodes, isolate hot ("celebrity") keys, and avoid cross-shard joins.
 - Each extra engine adds backups, ops, and failure modes. Say so in the ADR.
 
 ## Done when

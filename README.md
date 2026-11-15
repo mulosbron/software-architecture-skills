@@ -1,8 +1,8 @@
 # Software Architecture Skills for AI Agents
 
-Twelve opinionated architecture skills and a small CLI, built for coding agents that read `AGENTS.md`.
+Twenty opinionated architecture skills and a small CLI, built for coding agents that read `AGENTS.md`.
 
-## Why only twelve
+## Why twenty
 
 The first version had 76 skills. Most were textbook summaries of things a current model already knows (what a Decorator is, what the three pillars of observability are). Those files added tokens, not judgment. They were removed.
 
@@ -19,13 +19,21 @@ What remains passes one test: *could the model not know this on its own?* Each s
 |---|---|
 | `evaluating-microservices-readiness` | User wants microservices. Pushes back first. |
 | `designing-modular-monoliths` | Structuring a new app or carving modules out. |
+| `modeling-with-ddd` | Subdomains, bounded contexts, ACLs, aggregates, invariants. |
+| `structuring-clean-architecture` | Ports-and-adapters isolation for non-trivial domains. |
+| `structuring-monorepos` | Multi-package workspaces, caching, affected CI, boundaries. |
 | `balancing-architectural-tradeoffs` | Choosing between styles or quality attributes. |
 | `choosing-api-style` | REST vs GraphQL vs gRPC vs WebSockets. |
+| `protecting-and-sizing-apis` | Capacity math (QPS/storage), rate limiting, distributed IDs. |
 | `choosing-database-type` | Picking or splitting storage. |
 | `choosing-message-broker` | Adding async; RabbitMQ vs Kafka. |
+| `designing-cqrs-and-event-sourcing` | Read/write splits, event streams, projections, sagas. |
+| `designing-idempotent-mutations` | Idempotency, optimistic locks, ledgers/payments, Saga vs 2PC. |
+| `modeling-threats-and-privacy` | STRIDE threat modeling, trust boundaries, PII retention. |
 | `selecting-design-patterns` | Which GoF pattern, if any. |
 | `verifying-solid-compliance` | Reviewing code for SOLID violations. |
 | `refactoring-god-classes` | Splitting an oversized class safely. |
+| `modernizing-legacy-systems` | Incremental Strangler Fig migrations and tech debt ranking. |
 | `writing-adrs` | Recording decisions; answering "why is it built this way?" |
 | `documenting-with-c4` | Context, container, component diagrams. |
 | `deploying-with-containers` | Dockerfile, Kubernetes, CI pipeline, rollout. |

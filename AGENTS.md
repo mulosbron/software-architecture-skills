@@ -8,13 +8,21 @@ Opinionated architecture guidance plus CLI tools. Each skill states a goal, this
 |---|---|
 | `skills/evaluating-microservices-readiness` | User wants microservices. Challenge first; default is a modular monolith. |
 | `skills/designing-modular-monoliths` | Structuring a new app or carving modules from a tangled one. |
+| `skills/modeling-with-ddd` | Subdomains, bounded contexts, ACLs, aggregates, and invariants. |
+| `skills/structuring-clean-architecture` | Ports-and-adapters dependency boundaries for complex domain modules. |
+| `skills/structuring-monorepos` | Multi-package workspaces, affected CI, caching, and package boundaries. |
 | `skills/balancing-architectural-tradeoffs` | Choosing between styles or quality attributes. |
 | `skills/choosing-api-style` | REST vs GraphQL vs gRPC vs WebSockets. |
+| `skills/protecting-and-sizing-apis` | Capacity sizing (QPS/storage), rate limiting, distributed IDs. |
 | `skills/choosing-database-type` | Picking a database or splitting storage. |
 | `skills/choosing-message-broker` | Adding async messaging; RabbitMQ vs Kafka. |
+| `skills/designing-cqrs-and-event-sourcing` | Separating read/write models, event streams, projections, and sagas. |
+| `skills/designing-idempotent-mutations` | Idempotency keys, optimistic locks, payments/ledgers, Saga vs 2PC. |
+| `skills/modeling-threats-and-privacy` | STRIDE threat modeling, trust boundaries, PII minimization, and retention. |
 | `skills/selecting-design-patterns` | Which GoF pattern, or whether one is justified at all. |
 | `skills/verifying-solid-compliance` | Reviewing code for SOLID violations. |
 | `skills/refactoring-god-classes` | Splitting an oversized class safely. |
+| `skills/modernizing-legacy-systems` | Incremental Strangler Fig migrations, characterization tests, and tech debt. |
 | `skills/writing-adrs` | Any hard-to-reverse decision; "why is it built this way?" |
 | `skills/documenting-with-c4` | Diagramming boundaries, deployables, components. |
 | `skills/deploying-with-containers` | Dockerfile, Kubernetes manifests, CI pipeline, rollout. |

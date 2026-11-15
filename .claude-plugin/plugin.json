@@ -1,0 +1,5 @@
+{
+  "name": "software-architecture-skills",
+  "version": "1.0.0",
+  "description": "Opinionated software architecture skills and CLI tools covering modular monoliths, DDD, Clean Architecture, CQRS/event sourcing, monorepos, legacy modernization, STRIDE/privacy, ADRs, C4 diagrams, SOLID, capacity sizing, idempotent workflows, and containers."
+}
