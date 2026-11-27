@@ -29,8 +29,8 @@ import sys
 from pathlib import Path
 from typing import Dict, Set
 
-YES = {"yes", "y", "true", "1", "evet", "var"}
-NO = {"no", "n", "false", "0", "hayir", "hayır", "yok"}
+YES = {"yes", "y", "true", "1"}
+NO = {"no", "n", "false", "0"}
 
 TRAITS = [
     ("recurring", "Recurring workflow"),
