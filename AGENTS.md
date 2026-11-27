@@ -26,6 +26,7 @@ Opinionated architecture guidance plus CLI tools. Each skill states a goal, this
 | `skills/writing-adrs` | Any hard-to-reverse decision; "why is it built this way?" |
 | `skills/documenting-with-c4` | Diagramming boundaries, deployables, components. |
 | `skills/deploying-with-containers` | Dockerfile, Kubernetes manifests, CI pipeline, rollout. |
+| `skills/ai-factory-builder` | Turning recurring digital team workflows into specific, shared, scrutinized AI factories (7-trait scorer, shadow-run plan, evals). |
 
 ## Tools (`tools/`)
 

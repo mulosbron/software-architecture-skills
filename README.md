@@ -37,6 +37,7 @@ What remains passes one test: *could the model not know this on its own?* Each s
 | `writing-adrs` | Recording decisions; answering "why is it built this way?" |
 | `documenting-with-c4` | Context, container, component diagrams. |
 | `deploying-with-containers` | Dockerfile, Kubernetes, CI pipeline, rollout. |
+| `ai-factory-builder` | Turning recurring team workflows into specific, shared, scrutinized AI factories (`scripts/factory_blueprint.py`). |
 
 ## Tools
 
