@@ -1,109 +1,130 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-factory_blueprint.py — AI fabrika adayı puanlayıcı ve plan iskeleti üretici.
+factory_blueprint.py — AI factory candidate scorer and blueprint generator.
 
-Kaynak: Notion "İşin Yeni Biçimi" metodolojisi (ai-factory-builder skill'i).
+Methodology: Notion's "A New Shape for Work" (ai-factory-builder skill).
 
-Kullanım:
-    # Nitelikleri açıkça puanlat
-    factory_blueprint.py check --name "Haftalık rapor" --recurring evet --verifiable evet \
-        --stable evet --standard evet --digital evet --known-universe evet --low-cost-mistakes evet
+Usage:
+    # Score traits explicitly
+    python factory_blueprint.py check --name "Weekly Report" --recurring yes --verifiable yes \
+        --stable yes --standard yes --digital yes --known-universe yes --low-cost-mistakes yes --json
 
-    # Serbest metinden otomatik tahminle puanlat
-    factory_blueprint.py check --name "Sunum paketi" --describe "her hafta aynı format sunum..."
+    # Infer traits from free text
+    python factory_blueprint.py check --name "Sales Deck Pack" \
+        --describe "Every week we build the same format deck from our CRM; mistakes are easy to catch."
 
-    # Plan iskeleti üret
-    factory_blueprint.py blueprint --name "Sunum paketi" --trigger "..." \
-        --stages "araştırma,yazma" --tools "..." --out plan.md
+    # Generate a 10-section factory blueprint skeleton
+    python factory_blueprint.py blueprint --name "Sales Deck Pack" --trigger "new card in todo" \
+        --stages "research,drafting,formatting" --tools "context system, slide template" --out plan.md
 
-Evet anahtarları: evet/yes/y/true/1  hayır/no/n/false/0
+Boolean values accepted: yes/y/true/1 (and no/n/false/0).
 """
+
+from __future__ import annotations
 
 import argparse
 import json
 import re
 import sys
 from pathlib import Path
+from typing import Dict, Set
 
-YES = {"evet", "yes", "y", "true", "1", "var"}
-NO = {"hayır", "hayir", "no", "n", "false", "0", "yok"}
+YES = {"yes", "y", "true", "1", "evet", "var"}
+NO = {"no", "n", "false", "0", "hayir", "hayır", "yok"}
 
 TRAITS = [
-    ("recurring", "Tekrarlanır"),
-    ("verifiable", "Doğrulanabilir"),
-    ("stable", "Zamanla kararlı (süreç ve gereksinimler görece sabit)"),
-    ("standard", "Ortalama/standart kalite yeterli, istisnai yaratıcılık gerekmez"),
-    ("digital", "Tamamıyla dijital bilgi işi"),
-    ("known-universe", "Bilinen bir bilgi evrenine erişim gerektirir"),
-    ("low-cost-mistakes", "Hatalar pahalıya gelmez ya da kolay yakalanır"),
+    ("recurring", "Recurring workflow"),
+    ("verifiable", "Verifiable output quality"),
+    ("stable", "Stable over time (consistent process and requirements)"),
+    ("standard", "Standard/reliable quality is sufficient (no one-off genius required)"),
+    ("digital", "Fully digital knowledge work"),
+    ("known-universe", "Bounded, known information universe"),
+    ("low-cost-mistakes", "Low cost of mistakes (inexpensive or easy to catch)"),
 ]
 
-# Serbest metinden nitelik tahmini için anahtar kelimeler (TR + EN)
 HINTS = {
-    "recurring": r"her (hafta|gün|ay|çeyrek)|haftalık|günlük|aylık|çeyreklik|tekrar|düzenli|weekly|daily|monthly|recurr",
-    "verifiable": r"doğrula|kontrol|kalite kontrol|hata (yakala|bul)|eval|kontrol edilebilir|verify|check|evals",
-    "stable": r"sabit|aynı format|aynı biçim|standart|şablon|template|değişmeyen|same format|stable",
-    "standard": r"standart|yeterli|normal|ortalama|fark etmez|good enough|standard",
-    "digital": r"e-?posta|mail|rapor|doküman|sunum|veri|tablo|slayt|digital|document|report|deck",
-    "known-universe": r"veritabanı|crm|ambar|arşiv|arsiv|kaynak(lar)?|dizini|database|warehouse|repository",
-    "low-cost-mistakes": r"kolay (fark|yakala)|düşük risk|geri alınabilir|revizyon|taslak|gölge|easy (to )?(catch|detect)|low (risk|cost)|shadow|draft",
+    "recurring": r"every (week|day|month|quarter)|weekly|daily|monthly|quarterly|recurr|repeat|regularly",
+    "verifiable": r"verif|check|qa|quality|catch (error|mistake)|eval|criteria|checklist|rubric",
+    "stable": r"same format|consistent|standard|template|fixed|stable|unchanging",
+    "standard": r"standard|good enough|reliable|routine|average|solid|consistent quality",
+    "digital": r"e-?mail|report|doc(ument)?|deck|slide|data|table|ticket|pr|pull request|digital|spreadsheet",
+    "known-universe": r"database|crm|warehouse|archive|repo(sitory)?|wiki|notion|knowledge base|sources",
+    "low-cost-mistakes": r"easy (to )?(catch|detect|spot)|low (risk|cost)|reversible|draft|shadow|review",
 }
 
 
-def _norm(v):
+def _norm(v: str | None) -> bool | None:
     if v is None:
         return None
-    v = v.strip().lower()
-    if v in YES:
+    s = v.strip().lower()
+    if s in YES:
         return True
-    if v in NO:
+    if s in NO:
         return False
     return None
 
 
-def infer_from_text(text):
-    flags = {}
-    for key, rx in HINTS.items():
-        flags[key] = bool(re.search(rx, text, re.IGNORECASE))
-    return flags
+def infer_from_text(text: str) -> Dict[str, bool]:
+    return {key: bool(re.search(rx, text, re.IGNORECASE)) for key, rx in HINTS.items()}
 
 
-def score(name, flags, inferred_keys):
+def evaluate(name: str, flags: Dict[str, bool], inferred_keys: Set[str]) -> dict:
     score_val = sum(1 for k, _ in TRAITS if flags.get(k))
     missing = [label for key, label in TRAITS if not flags.get(key)]
     if score_val >= 6:
-        verdict = "GÜÇLÜ ADAY — fabrika kurma planına geç."
+        tier = "strong"
+        verdict = "STRONG CANDIDATE — proceed to factory blueprint."
     elif score_val >= 4:
-        verdict = "KOŞULLU ADAY — eksik nitelikleri kullanıcıyla konuş, hafifletme yolu varsa planla."
+        tier = "conditional"
+        verdict = "CONDITIONAL CANDIDATE — review missing traits with the user and plan only if mitigations exist."
     else:
-        verdict = "ZAYIF ADAY — otomasyona girişme; elle yürütmeyi sürdürmenin gerekçesini yaz."
-    lines = []
-    lines.append("=" * 60)
-    lines.append(f"Fabrika adayı puanı: {name}")
-    lines.append("=" * 60)
-    lines.append(f"Puan: {score_val}/7")
-    lines.append(f"Karar: {verdict}")
-    lines.append("")
-    lines.append("Nitelik durumu:")
+        tier = "weak"
+        verdict = "WEAK CANDIDATE — do not automate; document why manual execution is better."
+    return {
+        "ok": True,
+        "name": name,
+        "score": score_val,
+        "max_score": len(TRAITS),
+        "tier": tier,
+        "verdict": verdict,
+        "traits": {
+            key: {"passed": bool(flags.get(key)), "label": label, "inferred": key in inferred_keys}
+            for key, label in TRAITS
+        },
+        "missing": missing,
+        "triad_reminder": ["specific", "shared", "scrutinized"],
+    }
+
+
+def format_report(res: dict) -> str:
+    lines = [
+        "=" * 60,
+        f"Factory Candidate Score: {res['name']}",
+        "=" * 60,
+        f"Score: {res['score']}/{res['max_score']}",
+        f"Verdict: {res['verdict']}",
+        "",
+        "Trait breakdown:",
+    ]
     for key, label in TRAITS:
-        mark = "evet" if flags.get(key) else "hayır"
-        src = "(metinden tahmin edildi)" if key in inferred_keys else ""
-        lines.append(f"  [{mark:>5}] {label} {src}")
-    if missing:
+        info = res["traits"][key]
+        mark = "yes" if info["passed"] else "no"
+        src = " (inferred from text)" if info["inferred"] else ""
+        lines.append(f"  [{mark:>3}] {label}{src}")
+    if res["missing"]:
         lines.append("")
-        lines.append("Eksik nitelikler:")
-        for label in missing:
+        lines.append("Missing traits:")
+        for label in res["missing"]:
             lines.append(f"  - {label}")
     lines.append("")
-    lines.append("Hatırlatma: fabrika olmanın üç ölçütü ayrıca doğrulanmalı: özel, ortak, denetlenen.")
+    lines.append("Reminder: also verify the three factory criteria — specific, shared, scrutinized.")
     lines.append("=" * 60)
     return "\n".join(lines)
 
 
-def cmd_check(args):
-    flags = {}
-    inferred_keys = set()
+def cmd_check(args: argparse.Namespace) -> int:
+    flags: Dict[str, bool | None] = {}
+    inferred_keys: Set[str] = set()
     for key, _ in TRAITS:
         flags[key] = _norm(getattr(args, key.replace("-", "_"), None))
     if args.describe:
@@ -112,109 +133,129 @@ def cmd_check(args):
             if flags[key] is None:
                 flags[key] = value
                 inferred_keys.add(key)
+    final_flags: Dict[str, bool] = {}
     for key, _ in TRAITS:
         if flags[key] is None:
-            flags[key] = False
+            final_flags[key] = False
             inferred_keys.add(key)
-    print(score(args.name, flags, inferred_keys))
+        else:
+            final_flags[key] = bool(flags[key])
+    res = evaluate(args.name, final_flags, inferred_keys)
+    print(json.dumps(res, indent=2) if args.json else format_report(res))
     return 0
 
 
-BLUEPRINT = """# Fabrika Planı: {name}
+BLUEPRINT = """# AI Factory Blueprint: {name}
 
-## 1. Ölçüt raporu
+## 1. Triad Criteria Check
 
-- Özel: [bu fabrika hangi görev türünü yapar, hangisini yapmaz]
-- Ortak: [kimler kullanır, erişim nasıl açılır]
-- Denetlenen: [kim izler, hangi sıklıkla]
+- **Specific:** [which exact task class this factory handles, and what is out of scope]
+- **Shared:** [who on the team uses it and how access is provisioned]
+- **Scrutinized:** [named owner(s), review cadence, and error-triage loop]
 
-## 2. Görev tanımı
+## 2. Task Definition
 
-[İşin bugün nasıl yapıldığını üç cümleyle yaz. Fabrika hangi çıktıyı üretir?]
+[Describe in 3 sentences how the task is performed today and what artifact the factory produces.]
 
-## 3. Tetikleyiciler
+## 3. Triggers
 
-- Zamanlanmış: [örnek: her hafta pazartesi 09:00]
-- Olay bazlı: {trigger}
+- **Scheduled:** [e.g. every Monday at 09:00]
+- **Event-driven:** {trigger}
 
-## 4. Girdi, aşama ve çıktı
+## 4. Inputs, Stages & Outputs
 
-- Girdiler: [hangi veritabanları, dosyalar, sistemler]
-- Aşamalar: {stages}
-- Son çıktılar: [nereye kaydedilir, hangi kart güncellenir]
+- **Inputs:** [databases, files, external synced sources]
+- **Stages:** {stages}
+- **Outputs:** [where final artifacts are written and which card/status updates]
 
-## 5. Araç ve erişim
+## 5. Tools & Permissions
 
-- Gerekli erişim: {tools}
-- Erişim vermeyelim: [açıkça yasak alanlar: gizli veri, üretim değişikliği, parasal işlem]
+- **Required access:** {tools}
+- **Explicitly forbidden:** [sensitive data, production mutations, financial actions]
 
-## 6. Gölge çalıştırma planı
+## 6. Shadow-Run Rollout Plan
 
-1. İlk 5 çalıştırma tamamen taslak modda: gerçek eylem yok, sadece ne yapacağını raporla.
-2. İnsan gözden geçirmesi: [kim, hangi ölçütle bakacak]
-3. Geçiş kuralı: [kaç başarılı gölge çalıştırmadan sonra hacim artar]
+1. First 5 runs operate strictly in draft/shadow mode: zero external side effects, log proposed actions only.
+2. Human review: [reviewer and acceptance criteria]
+3. Promotion rule: [consecutive passing shadow runs required before ramping live volume]
 
-## 7. Hacim planı
+## 7. Volume Control Plan
 
-- Başlangıç hacmi: [örnek: günde 5 kart ya da %1]
-- Artış kuralı: [hata oranı hangi eşikteyse hacim artar/geri çekilir]
+- **Initial volume:** [e.g. 5 cards/day or 5% of incoming volume]
+- **Ramp / rollback rule:** [error-rate threshold for increasing or pausing volume]
 
-## 8. Eval seti
+## 8. Eval Suite
 
-| Görev | Yargı ölçütleri | Yargıç (kod / AI / insan) |
-|-------|-----------------|---------------------------|
-| [test görevi 1] | [doğru olması gerekenler] | [kim ya da ne karar verir] |
-| [test görevi 2] | | |
+| Task | Grading Criteria | Judge (code / AI / human) |
+|---|---|---|
+| [test task 1] | [required properties] | [code / AI / human] |
+| [negative / out-of-scope test] | [factory rejects or escalates cleanly] | [code] |
 
-## 9. İstem sürümleme
+## 9. Prompt Versioning
 
-- İstemler nerede saklanır: [Prompt Versions veritabanı / sürüm kontrolü]
-- Durum değerleri: testing, production, retired
-- Geri dönüş kuralı: [yeni sürüm hangi koşulda geri çekilir]
+- **Storage:** [Prompt Versions database or repository]
+- **States:** `testing`, `production`, `retired`
+- **Rollback rule:** [condition that reverts to previous production prompt]
 
-## 10. Bağlam sistemi bağlantıları
+## 10. Context System Integration
 
-- Kullanılacak çekirdek veritabanları: [Projeler, Görevler, Dokümanlar, Kişiler, Ekipler, Müşteriler]
-- Yeni veritabanı önerisi: [{name} görev kartları + çalıştırma geçmişi]
-- Bağlam çürümesi kontrolü: [hangi bilgiler ne sıklıkla bayatlık için taranır]
+- **Core databases used:** [Projects, Tasks, Documents, People, Teams, Customers]
+- **Factory database:** [{name} task cards + run history]
+- **Context-rot hygiene:** [scan cadence, staleness flags, and owner]
 """
 
 
-def cmd_blueprint(args):
-    stages = ", ".join(s.strip() for s in args.stages.split(",") if s.strip()) if args.stages else "teke bölünmemiş tek aşama"
-    tools = args.tools or "[ajan için gerekli araçlar]"
-    body = BLUEPRINT.format(name=args.name, trigger=args.trigger or "[tetikleyici belirtilmedi]", stages=stages, tools=tools)
+def cmd_blueprint(args: argparse.Namespace) -> int:
+    stages = ", ".join(s.strip() for s in args.stages.split(",") if s.strip()) if args.stages else "single unified stage"
+    tools = args.tools or "[required agent tools]"
+    body = BLUEPRINT.format(
+        name=args.name,
+        trigger=args.trigger or "[unspecified trigger]",
+        stages=stages,
+        tools=tools,
+    )
     if args.out:
-        Path(args.out).write_text(body, encoding="utf-8")
-        print(f"Plan iskeleti yazıldı: {args.out}")
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(body, encoding="utf-8")
+        if args.json:
+            print(json.dumps({"ok": True, "name": args.name, "out": str(out_path)}, indent=2))
+        else:
+            print(f"Blueprint written to: {out_path}")
     else:
-        print(body)
+        if args.json:
+            print(json.dumps({"ok": True, "name": args.name, "blueprint": body}, indent=2))
+        else:
+            print(body)
     return 0
 
 
-def main():
-    ap = argparse.ArgumentParser(description="AI fabrika adayı puanlayıcı ve plan iskeleti üretici")
+def main() -> int:
+    ap = argparse.ArgumentParser(description="AI factory candidate scorer and blueprint generator")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    ck = sub.add_parser("check", help="adayı yedi nitelik üzerinden puanla")
-    ck.add_argument("--name", required=True)
-    ck.add_argument("--describe", help="serbest metin; eksik nitelikler bundan tahmin edilir")
+    ck = sub.add_parser("check", help="Score a candidate workflow across the 7 factory traits")
+    ck.add_argument("--name", required=True, help="Candidate workflow name")
+    ck.add_argument("--describe", help="Free-text description used to infer omitted traits")
     for key, _ in TRAITS:
-        ck.add_argument(f"--{key}", help=f"evet/hayır (varsayılan: tahmin ya da hayır)")
+        ck.add_argument(f"--{key}", help="yes/no (default: inferred or no)")
+    ck.add_argument("--json", action="store_true", help="Output machine-readable JSON")
 
-    bp = sub.add_parser("blueprint", help="dört adımlı plan iskeleti üret")
-    bp.add_argument("--name", required=True)
-    bp.add_argument("--trigger", help="olay bazlı tetikleyici açıklaması")
-    bp.add_argument("--stages", help="virgülle ayrılmış aşamalar")
-    bp.add_argument("--tools", help="ajanın erişeceği araç ve sistemler")
-    bp.add_argument("--out", help="çıktı dosyası (yoksa ekrana yazar)")
+    bp = sub.add_parser("blueprint", help="Generate a 10-section AI factory blueprint skeleton")
+    bp.add_argument("--name", required=True, help="Factory name")
+    bp.add_argument("--trigger", help="Event-driven trigger description")
+    bp.add_argument("--stages", help="Comma-separated pipeline stages")
+    bp.add_argument("--tools", help="Tools and systems the agent can access")
+    bp.add_argument("--out", help="Output markdown path (prints to stdout if omitted)")
+    bp.add_argument("--json", action="store_true", help="Output machine-readable JSON")
 
     args = ap.parse_args()
     if args.cmd == "check":
-        sys.exit(cmd_check(args))
+        return cmd_check(args)
     if args.cmd == "blueprint":
-        sys.exit(cmd_blueprint(args))
+        return cmd_blueprint(args)
+    return 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

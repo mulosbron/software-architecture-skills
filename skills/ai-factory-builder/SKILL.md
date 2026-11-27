@@ -1,121 +1,121 @@
 ---
 name: ai-factory-builder
-description: Notion'un "İşin Yeni Biçimi" metodolojisini uygular. Tekrarlanan bir iş akışını özel, ortak ve denetlenen bir AI fabrikasına dönüştürür. "Fabrika kuralım", "bu iş akışını otomatikleştirelim", "bu süreç ajanla yapılabilir mi", "eval seti oluşturalım" isteklerinde veya ekibin iş listesinden otomasyon adayı çıkarılması istendiğinde tetiklenir.
+description: Applies Notion's "A New Shape for Work" methodology to turn recurring team workflows into specific, shared, and scrutinized AI factories. Triggers when the user asks to "build an AI factory", "automate this workflow", "can an agent handle this process", "design an eval suite", "plan a shadow run", or "identify automation candidates from our team's workload".
 ---
 
-# AI Fabrika Kurucu
+# AI Factory Builder
 
-Bu skill, tekrarlanan bir işin kökünü kurcalamak yerine onu özel, ortak ve denetlenen bir AI fabrikasına dönüştürür. Kaynak, Notion'un "İşin Yeni Biçimi" rehberidir. Fabrika tanımı üç ölçüte dayanır: özeldir, ortaktır ve denetlenir. Bu üçlünün hiçbirini taşımayan düzenleme fabrika değildir, kişiye özel ajan iş akışıdır.
+Turns a recurring digital workflow into a **specific, shared, and scrutinized AI factory** rather than a fragile ad-hoc personal script. Grounded in Notion's *"A New Shape for Work"* (v1.0) methodology. A setup that lacks any of the three criteria is not a factory — it is a personal agent workflow.
 
-## Ne Zaman Kullanılır
+## When to Use
 
-Kullanıcı şunlardan birini isterse devreye gir:
+Invoke when the user asks for any of the following:
 
-- "Bu iş akışını otomatikleştirelim" ya da "bu süreç ajanla yapılabilir mi"
-- "Ekip işlerimizden fabrika adayı çıkaralım"
-- "Fabrika kurma planı yaz", "eval seti hazırla", "gölge çalıştırma planı çıkar"
-- Belirli bir görev türünün ajanla tekrar tekrar yapılmasını isteme
+- "Automate this workflow" or "can this process be run by an agent?"
+- "Find AI factory candidates from our team's recurring tasks"
+- "Write a factory blueprint", "build an eval suite", or "design a shadow-run rollout plan"
+- Turning a repeated knowledge-work task into a reliable, team-wide agent pipeline
 
-## Önce Üç Ölçütü Doğrula
+## First: Verify the Three Criteria
 
-Bir düzenlemenin fabrika sayılması için üç koşul bir arada olmalı:
+An agent setup qualifies as a factory only when all three criteria hold simultaneously:
 
-- **Özel (specific).** Belirli türdeki görevleri üstlenmek üzere tasarlanmıştır. Gelen kutusu ayıklamadan strateji beyin fırtınasına kadar her işi isteyen bir ajan özel değildir ve fabrika sayılmaz.
-- **Ortak (shared).** Ekibin birden çok insanı kullanabilir. Kurucunun yararlandığı bellek veya özel yönergeler ise ortak değildir.
-- **Denetlenen (scrutinized).** Ekipten belirli kişiler ajanın çıktısını izler, hataları ayıklar ve sistemi zamanla iyileştirir. Kimsenin izlemediği bir ajan denetlenmemiştir ve fabrika sayılmaz.
+- **Specific.** Designed for one defined class of task. A generalist assistant asked to do everything from inbox triage to strategy brainstorming is not specific and is not a factory.
+- **Shared.** Usable by multiple people on the team. A founder's private prompts or personal memory setup is not shared.
+- **Scrutinized.** Named owners monitor outputs, triage failures, and improve the system over time. An unmonitored agent is not scrutinized and is not a factory.
 
-Bu üçünü her teklifte açıkça doğrula ve raporda durumunu belirt.
+Explicitly verify all three in every proposal and report their status.
 
-## Adım 0: Bağlam Sistemi Önkoşulu
+## Step 0: Context System Prerequisite
 
-Fabrika, besleneceği bir bağlam sistemi olmadan iyi çalışmaz. Kurulum öncesi şu çekirdek veritabanlarının varlığını kontrol et (detaylar `docs/baglam-sistemi-ontolojisi.md` içinde):
+A factory cannot perform well without a clean context system feeding it. Before building a factory, verify the existence of these core databases (details in `docs/context-system-ontology.md`):
 
-- Projeler, Görevler, Dokümanlar, Kişiler, Ekipler, Müşteriler
+- **Projects, Tasks, Documents, People, Teams, Customers**
 
-Nesneler arası ilişkiler kritiktir. Görevler bir projeye bağlıdır, projelerin bir DRI'si (Doğrudan Sorumlu Kişi) Kişiler veritabanından gelir, toplantılar projelere ve katılımcılara bağlanır. Bu yapı yoksa önce en yalın hâliyle kur, sonra fabrikaya geç. Güncel olmayan ya da yanlış yerde duran bağlam, fabrikayı da zehirler (bağlam çürümesi).
+Relations between objects matter: Tasks link to a Project, each Project has a DRI (Directly Responsible Individual) from People, and Meetings link to Projects and Attendees. If this core does not exist, stand up the leanest version first before building the factory. Stale or misplaced context poisons every downstream factory (**context rot**).
 
-## Dört Adım
+## Four Steps
 
-### 1. Fark Et
+### 1. Spot
 
-Fabrika adayını bul. Adayların taşıdığı yedi nitelik var: tekrarlanır, doğrulanabilir, zamanla kararlı, ortalama kalite yeterli, tamamıyla dijital, bilinen bir bilgi evreni, düşük hata maliyeti. Adayı `scripts/factory_blueprint.py check` ile puanla (kullanım aşağıda). Niteliklerin ayrıntısı `docs/aday-nitelikleri.md` içindedir.
+Identify strong factory candidates using the **seven traits**: recurring, verifiable, stable over time, standard quality is sufficient, fully digital, known information universe, and low cost of mistakes. Score candidates with `scripts/factory_blueprint.py check` (usage below; details in `docs/candidate-traits.md`).
 
-Kural: altı ve yedi puan güçlü aday, dört ve beş puan koşullu aday (eksik nitelikleri kullanıcıyla konuş), üç ve altı puan zayıf aday. Zayıf adaylarda otomasyona girişme, elle yapmaya devam etmenin gerekçesini yaz.
+Scoring rule:
+- **6–7 points:** Strong candidate — proceed to planning.
+- **4–5 points:** Conditional candidate — review missing traits with the user and plan only if mitigations exist.
+- **0–3 points:** Weak candidate — do not automate; document why manual execution is better.
 
-Amaç insanları süreçten atmak değildir. Onları montaj hattının üstündeki sorumluluk ve yetki mevkiine taşımaktır.
+The goal is **not** removing humans from work — it is moving humans up to ownership, judgment, and accountability above the assembly line.
 
-### 2. Planla
+### 2. Plan
 
-Yalın planla, karmaşıklığı sonra ekle. İnsanların ve LLM'lerin en sık yaptığı hata, hayal edilen hatalar için önleyici düzeltmelerle dolu karmaşık bir fabrika kurmaktır. Fabrikanın nasıl çökeceğini kimse doğru tahmin edemez. Gerçek hataları gör, sonra çöz.
+Plan lean and add complexity later. The most common mistake made by both humans and LLMs is pre-engineering complex guardrails for imagined failure modes. Nobody predicts how a factory actually breaks in advance — observe real failures, then fix them.
 
-Planın en temel kararları şunlardır:
+Core planning decisions:
+- What will the factory do, and what will it explicitly **not** do?
+- Where will it live? (database, platform, code)
+- What are the inputs, stages, and final outputs?
+- Which tools and systems may the agent access?
 
-- Fabrika ne yapacak, ne yapmayacak?
-- Nerede yaşayacak? (veritabanı, platform, kod)
-- Girdiler, aşamalar ve son çıktılar neler?
-- Ajan hangi araçlara ve sistemlere erişecek?
+Recommend a **hybrid architecture**: keep tasks, statuses, outputs, run logs, and prompts in a flexible context system, while running the agent itself wherever it executes best (Notion Custom Agents, Claude Managed Agents, OpenAI Agents API, or your own service).
 
-Kurulum biçimi için melez yaklaşımı öner: görevleri, durumları, çıktıları, çalıştırma geçmişini ve istemleri esnek bir bağlam sisteminde tut, ajanın kendisini uygun bir yerde çalıştır (Notion custom agents, Claude Managed Agents, OpenAI Agents API ya da kendi kurulumun).
+Generate a structured skeleton with `scripts/factory_blueprint.py blueprint`.
 
-`scripts/factory_blueprint.py blueprint` komutu bu kararları plan iskeletine dönüştürür.
+### 3. Run
 
-### 3. Çalıştır
+Never give a brand-new factory high-stakes live actions on day one. Use two safeguards:
 
-İlk andan önemli ve sonuç doğuran işler verme. İki araç kullan:
+- **Shadow runs.** The factory leaves zero real-world side effects: draft emails instead of sending them, log proposed CRM updates instead of writing them.
+- **Volume control.** Start on a small sample (e.g., two dozen test cases or an eval set). Expand volume and action permissions gradually as error rates drop.
 
-- **Gölge çalıştırma.** Fabrikadan gerçek dünyada iz bırakan hiçbir şey isteme. E-posta göndermek yerine taslak yazdır, CRM'de değişiklik yapmak yerine ne yazardı onu raporla.
-- **Hacim kontrolü.** Başlangıçta küçük bir örnek çalıştır. İstersen iki düzine test örneğinden oluşan bir eval setiyle başla. Güven büyüdükçe hacmi ve eylem yetkisini kademeli artır.
+### 4. Improve
 
-### 4. İyileştir
+Update the prompt whenever you observe a failure. Version your prompts (a simple `Prompt Versions` database with `testing` / `production` / `retired` states is enough for most factories; formal VCS is often overkill). Test every new prompt before rolling it out.
 
-Gözlemlediğin her hatada istemi güncelle. İstem sürümlerini sakla (basit durumlarda bir Prompt Versions veritabanı yeter, resmi sürüm kontrolü çoğu fabrika için abartıdır). Yeni istemi herkesi geçirmeden önce test et.
+Critical warning: testing only the latest failure is never enough, because prompt edits cause regressions elsewhere. Write down representative tasks and explicit grading criteria (**evals**). Code or AI can act as judges where objective; humans review high-stakes outputs.
 
-Kritik uyarı: yalnızca son başarısızlığı test etmek yetmez. İstem değişiklikleri başka yerlerde beklenmedik sonuç doğurur. Bu yüzden görevleri ve yargı ölçütlerini yazılı hâle getir (eval). Eval setinde her görev için doğru olmasını istediğin şeyler açıkça listelenir. Bazen AI, hatta sabit kod, yargıç olabilir. Kritik çıktılarda insan bakar.
+## The 5-Minute Minimum Viable Factory
 
-## En Yalın Fabrika Tarifi
+1. Create a database named after the task type (e.g., `Decks`).
+2. Add a `status` property: `todo`, `in_progress`, `done`.
+3. Trigger an agent whenever a new card enters `todo` (native platform agent or external webhook worker).
+4. Have the agent move the card to `in_progress`, produce the artifact, attach the link, and move it to `done`.
+5. Once working, share access with the team and instruct team agents to route requests into this database.
+6. Update the prompt on every observed failure.
 
-En yalın hâli beş dakikada kurulur:
-
-1. "Sunumlar" gibi görev türünün adıyla bir veritabanı aç.
-2. "durum" sütunu ekle: yapılacak, yapılıyor, bitti.
-3. "yapılacak" durumunda yeni görev oluştuğunda çalışacak bir ajan kur (platformun kendi ajan özelliği ya da webhook ile harici ajan).
-4. Ajan kartı "yapılıyor"a çeksin, işi üretsin, karta çıktının bağlantısını yazıp "bitti"ye taşıyın.
-5. Çalıştığını gördüğünde erişimi ekibe aç ve ekip ajanlarına "sunum istekleri bu veritabanına satır olarak düşsün" yönergesini ver.
-6. Her hatada istemi güncelle.
-
-## Script Kullanımı
+## Script Usage (`scripts/factory_blueprint.py`)
 
 ```bash
-# Aday puanlama: nitelikleri açıkça ver
-python3 scripts/factory_blueprint.py check --name "Haftalık proje raporu" \
-  --recurring evet --verifiable evet --stable evet --standard evet \
-  --digital evet --known-universe evet --low-cost-mistakes evet
+# Score a candidate explicitly across all 7 traits
+python scripts/factory_blueprint.py check --name "Weekly Project Report" \
+  --recurring yes --verifiable yes --stable yes --standard yes \
+  --digital yes --known-universe yes --low-cost-mistakes yes --json
 
-# Aday puanlama: serbest metinden otomatik tahmin
-python3 scripts/factory_blueprint.py check --name "Sunum paketi" \
-  --describe "Her hafta ekiplerin durumunu topluyoruz ve aynı format sunum üretiyoruz. Hataları kolay fark ediyoruz."
+# Infer traits automatically from a free-text description
+python scripts/factory_blueprint.py check --name "Sales Deck Pack" \
+  --describe "Every week we collect team status updates and produce the same format deck. Mistakes are easy to catch."
 
-# Plan iskeleti üret
-python3 scripts/factory_blueprint.py blueprint --name "Sunum paketi" \
-  --trigger "veritabanında yeni kart, durum = yapılacak" \
-  --stages "araştırma,yazma,tasarım" \
-  --tools "bağlam sistemi okuma-yazma, sunum şablonu" \
-  --out /tmp/sunum-fabrikasi-plani.md
+# Generate a 10-section factory blueprint skeleton
+python scripts/factory_blueprint.py blueprint --name "Sales Deck Pack" \
+  --trigger "new database card with status = todo" \
+  --stages "research,drafting,formatting" \
+  --tools "context system read/write, slide template" \
+  --out deck-factory-plan.md
 ```
 
-Script puanı ve gerekçeleri yazdırır, plan iskeletini verilen yola kaydeder. Puan karar yerine karar desteğidir, nihai karar kullanıcıyla konuşularak verilir.
+The score is decision support, not an automatic veto — confirm final decisions with the user.
 
-## Çıktı Formatı
+## Required Output Format
 
-Fabrika kurma sürecinin her çıktısı üç bölüm taşır:
+Every factory proposal includes three sections:
 
-- **Ölçüt raporu.** Özel, ortak, denetlenen üçlüsünün durumu ve yedi nitelik puanı.
-- **Plan belgesi.** Görev tanımı, tetikleyiciler, girdi/aşama/çıktı, araç erişimi, gölge çalıştırma ve hacim planı.
-- **İyileştirme seti.** Eval görev listesi, her görev için yargı ölçütleri ve istem sürümleme düzeni.
+- **Criteria Report.** Status of the specific / shared / scrutinized triad plus the 7-trait score.
+- **Blueprint Document.** Scope, triggers, inputs/stages/outputs, tool permissions, shadow-run plan, and volume ramp.
+- **Improvement Kit.** Eval task table, grading criteria & judges, and prompt versioning workflow.
 
-## Sınırlar ve Etik
+## Guardrails & Ethics
 
-- Gizli veri, üretim ortamı değişikliği ve parasal işlemler içeren adaylarda gölge çalıştırma olmadan canlıya geçilmez. Bu sınır kullanıcı isterse bile açık onay istenerek aşılar.
-- Yedi nitelik ve üç ölçüt dışında uydurma gerekçe üretilmez. Puan düşükse düşük denir.
-- Fabrika taslağındaki isimler, veritabanları ve adımlar kullanıcının gerçek araçlarına uyarlanır. Uyarlanamayan yerde varsayım açıkça işaretlenir.
-- Amaç işten insanı çıkarmak değildir. Rapor bu ilkeyi taşımalıdır.
+- Candidates involving sensitive data, production mutations, or financial transactions **never** go live without shadow runs. Even if the user asks to skip shadow runs, require explicit confirmation first.
+- Never fabricate justifications outside the 3 criteria and 7 traits. If a score is low, state it plainly.
+- Adapt database names, tools, and steps to the user's real stack; mark any assumptions explicitly.
+- Preserve the core principle: factories elevate humans to oversight and creativity rather than replacing them blindly.
