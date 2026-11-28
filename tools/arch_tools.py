@@ -7,7 +7,7 @@ from datetime import date
 
 ADR_DIR = os.path.join("docs", "adrs")
 C4_DIR = os.path.join("docs", "c4")
-CODE_EXT = (".java", ".py", ".cs", ".ts", ".tsx", ".js", ".jsx", ".go", ".kt", ".rb", ".php", ".rs")
+CODE_EXT = (".java", ".py", ".cs", ".ts", ".tsx", ".js", ".jsx", ".go", ".kt", ".rb", ".php", ".rs", ".gd")
 SKIP_DIRS = {"node_modules", ".git", "vendor", "dist", "build", "target", "__pycache__", ".venv", "venv", "bin", "obj"}
 
 # ---------------------------------------------------------------- ADR
@@ -159,6 +159,11 @@ def init_c4(args):
 # ---------------------------------------------------------------- God classes
 
 CLASS_RE = re.compile(r"^\s*(?:export\s+|public\s+|internal\s+|abstract\s+|final\s+|sealed\s+|partial\s+|data\s+|open\s+)*(?:class|struct|object|interface|impl)\s+([A-Za-z_][A-Za-z0-9_]*)")
+# GDScript: a file IS a class. `class_name` names it globally; inner `class X:` blocks
+# are nested in it, so they count towards the script rather than starting a new one.
+GD_CLASS_NAME_RE = re.compile(r"^\s*class_name\s+([A-Za-z_]\w*)")
+GD_LOAD_RE = re.compile(r"""\b(?:preload|load)\s*\(\s*["']([^"']+\.gd)["']""")
+GD_IDENT_RE = re.compile(r"\b[A-Za-z_]\w*\b")
 
 
 def _walk(directory):
@@ -173,6 +178,9 @@ def _class_sizes(path):
     """Approximate class length as the span from one class declaration to the next (or EOF)."""
     with open(path, encoding="utf-8", errors="ignore") as fh:
         lines = fh.readlines()
+    if path.endswith(".gd"):
+        names = [m.group(1) for line in lines if (m := GD_CLASS_NAME_RE.match(line))]
+        return [(names[0] if names else "<file>", len(lines))]
     starts = [(i, m.group(1)) for i, line in enumerate(lines) if (m := CLASS_RE.match(line))]
     if not starts:
         return [("<file>", len(lines))]
@@ -203,15 +211,78 @@ IMPORT_RE = re.compile(r"""^\s*(?:from\s+([\w.]+)\s+import|import\s+([\w.]+)|imp
 PUBLIC_MARKERS = ("api", "public", "contracts", "__init__", "index")
 
 
+def _gd_context(src):
+    """Map GDScript `class_name`s onto files and collect the project's autoload names."""
+    class_index = {}
+    for path in _walk(src):
+        if not path.endswith(".gd"):
+            continue
+        with open(path, encoding="utf-8", errors="ignore") as fh:
+            for line in fh:
+                m = GD_CLASS_NAME_RE.match(line)
+                if m:
+                    class_index[m.group(1)] = os.path.relpath(path, src).replace("\\", "/")
+                    break
+    autoloads = set()
+    project_file = os.path.join(os.path.dirname(src), "project.godot")
+    if os.path.isfile(project_file):
+        in_autoload = False
+        with open(project_file, encoding="utf-8", errors="ignore") as fh:
+            for line in fh:
+                s = line.strip()
+                if s.startswith("["):
+                    in_autoload = s == "[autoload]"
+                    continue
+                m = re.match(r"(\w+)\s*=", s)
+                if in_autoload and m:
+                    autoloads.add(m.group(1))
+    return class_index, autoloads
+
+
+def _gd_refs(path, class_index, autoloads):
+    """Yield (line, target) for every cross-file reference a GDScript makes."""
+    with open(path, encoding="utf-8", errors="ignore") as fh:
+        for ln, line in enumerate(fh, 1):
+            for m in GD_LOAD_RE.finditer(line):
+                target = m.group(1)
+                yield ln, target if target.startswith("res://") else "res://" + target
+            # Autoloads are a module's published singleton API; class_name refs are not.
+            code = re.sub(r'"[^"\n]*"', '""', line)
+            code = re.sub(r"'[^'\n]*'", "''", code)
+            code = code.split("#", 1)[0]
+            for ident in GD_IDENT_RE.findall(code):
+                if ident in class_index and ident not in autoloads:
+                    yield ln, "res://" + class_index[ident]
+
+
+def _reached_module(parts, own, modules, shared):
+    """Return the sibling module a target reaches into, or None if the reference is allowed."""
+    other = next((p for p in parts if p in modules), None)
+    if not other or other == own or other == shared:
+        return None
+    after = parts[parts.index(other) + 1:]
+    if not after or after[0].lower() in PUBLIC_MARKERS:
+        return None
+    return other
+
+
 def check_module_boundaries(args):
     src = os.path.abspath(args.dir)
     modules = sorted(d for d in os.listdir(src) if os.path.isdir(os.path.join(src, d)) and d not in SKIP_DIRS and not d.startswith("."))
     if not modules:
         sys.exit(f"[ERR] No module directories under {src}")
+    class_index, autoloads = _gd_context(src)
     violations = []
     for path in _walk(src):
         rel = os.path.relpath(path, src).replace("\\", "/")
         own = rel.split("/")[0]
+        if path.endswith(".gd"):
+            for ln, target in _gd_refs(path, class_index, autoloads):
+                parts = [p for p in re.split(r"[./]", target) if p and p != ".."]
+                other = _reached_module(parts, own, modules, args.shared)
+                if other:
+                    violations.append((rel, ln, own, other, target))
+            continue
         with open(path, encoding="utf-8", errors="ignore") as fh:
             for ln, line in enumerate(fh, 1):
                 m = IMPORT_RE.match(line)
@@ -221,14 +292,9 @@ def check_module_boundaries(args):
                 parts = [p for p in re.split(r"[./]", target) if p and p not in ("..",)]
                 if not parts:
                     continue
-                # find the first segment that names a sibling module
-                other = next((p for p in parts if p in modules), None)
-                if not other or other == own or other == args.shared:
-                    continue
-                after = parts[parts.index(other) + 1:]
-                if not after or after[0].lower() in PUBLIC_MARKERS:
-                    continue
-                violations.append((rel, ln, own, other, target))
+                other = _reached_module(parts, own, modules, args.shared)
+                if other:
+                    violations.append((rel, ln, own, other, target))
     if not violations:
         print(f"[OK] {len(modules)} modules, no boundary violations ({', '.join(modules)})")
         return

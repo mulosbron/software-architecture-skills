@@ -27,6 +27,9 @@ Opinionated architecture guidance plus CLI tools. Each skill states a goal, this
 | `skills/documenting-with-c4` | Diagramming boundaries, deployables, components. |
 | `skills/deploying-with-containers` | Dockerfile, Kubernetes manifests, CI pipeline, rollout. |
 | `skills/ai-factory-builder` | Turning recurring digital team workflows into specific, shared, scrutinized AI factories (7-trait scorer, shadow-run plan, evals). |
+| `skills/agent-harness` | Self-improving agent harness router: 3-pillar memory, loop guardrails, LLMOps eval loop, headless Claude CLI delegation, MCP sales agent (6 sub-skills, `tools/memory_store.py`, `tools/tracer_eval.py`). |
+| `skills/mcp-connector-setup` | Connecting Gmail/Drive/Calendar/Zapier/PayPal/QuickBooks to Claude via native connectors or custom remote MCP servers; Claude Projects setup guide. |
+| `skills/claude-code-github-launcher` | Cloning, Dockerizing and iterating GitHub repos from the terminal with Claude Code (`scripts/github_claude_launcher.sh`, `scripts/claude_api_runner.py`). |
 
 ## Tools (`tools/`)
 

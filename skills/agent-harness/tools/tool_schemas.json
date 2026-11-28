@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Standardized tool definitions for a self-improving AI Agent Harness (compatible with OpenAI, Anthropic, and Gemini function calling).",
+  "tools": [
+    {
+      "name": "terminal_exec",
+      "description": "Execute a shell command in the local or containerized workspace and return stdout, stderr, and exit code.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": { "type": "string", "description": "Shell command to run" },
+          "cwd": { "type": "string", "description": "Working directory" },
+          "timeout_sec": { "type": "integer", "default": 60 }
+        },
+        "required": ["command"]
+      }
+    },
+    {
+      "name": "browser_fetch",
+      "description": "Navigate to a URL, extract readable content or structured elements, and return status.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "description": "Target HTTP/HTTPS URL" },
+          "extract_mode": { "type": "string", "enum": ["text", "links", "metadata"], "default": "text" }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "delegate_task",
+      "description": "Spawn an isolated sub-agent (or headless CLI worker such as Claude CLI) to perform parallel research or coding tasks.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "role": { "type": "string", "description": "Short role description for the sub-agent" },
+          "prompt": { "type": "string", "description": "Self-contained task instructions" },
+          "worker_type": { "type": "string", "enum": ["research_subagent", "claude_cli_headless"], "default": "research_subagent" }
+        },
+        "required": ["role", "prompt"]
+      }
+    },
+    {
+      "name": "schedule_cron_job",
+      "description": "Schedule a recurring or one-off task to run autonomously and deliver output to a gateway or log file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "job_name": { "type": "string" },
+          "interval_seconds": { "type": "integer", "description": "Interval between runs in seconds" },
+          "max_runs": { "type": "integer", "default": 10 },
+          "prompt_or_command": { "type": "string" },
+          "delivery_channel": { "type": "string", "enum": ["log", "whatsapp", "desktop"], "default": "log" }
+        },
+        "required": ["job_name", "interval_seconds", "prompt_or_command"]
+      }
+    },
+    {
+      "name": "memory_remember",
+      "description": "Save a durable fact, user preference, or learned system quirk into Semantic Memory (memories/memory.md).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "enum": ["user_profile", "preferences", "system_quirks", "consolidated_facts"] },
+          "fact": { "type": "string", "description": "Concise, durable fact to persist" }
+        },
+        "required": ["category", "fact"]
+      }
+    },
+    {
+      "name": "memory_recall",
+      "description": "Retrieve relevant context from Semantic Memory (top-k plain-text match) and Episodic Memory (SQLite state.db).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "top_k": { "type": "integer", "default": 5 },
+          "include_episodic": { "type": "boolean", "default": true }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "skill_manage",
+      "description": "Create, update, read, or list procedural skills stored as Markdown files under skills/<category>/<name>/SKILL.md.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string", "enum": ["create", "read", "list"] },
+          "name": { "type": "string" },
+          "category": { "type": "string", "default": "general" },
+          "description": { "type": "string" },
+          "instructions": { "type": "string" }
+        },
+        "required": ["action"]
+      }
+    },
+    {
+      "name": "sales_agent_add_knowledge",
+      "description": "MCP tool to inject additional knowledge (e.g., booking links, pricing, policies) into a deployed Sales Representative Agent.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "agent_id": { "type": "string" },
+          "title": { "type": "string" },
+          "content": { "type": "string" }
+        },
+        "required": ["agent_id", "title", "content"]
+      }
+    }
+  ]
+}

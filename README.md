@@ -38,6 +38,9 @@ What remains passes one test: *could the model not know this on its own?* Each s
 | `documenting-with-c4` | Context, container, component diagrams. |
 | `deploying-with-containers` | Dockerfile, Kubernetes, CI pipeline, rollout. |
 | `ai-factory-builder` | Turning recurring team workflows into specific, shared, scrutinized AI factories (`scripts/factory_blueprint.py`). |
+| `agent-harness` | Self-improving agent harness router: 3-pillar memory, loop guardrails, LLMOps eval loop, headless Claude CLI delegation, MCP sales agent (6 sub-skills, `tools/memory_store.py`, `tools/tracer_eval.py`). |
+| `mcp-connector-setup` | Connecting Gmail/Drive/Calendar/Zapier/PayPal/QuickBooks to Claude via native connectors or custom remote MCP servers; Claude Projects setup guide. |
+| `claude-code-github-launcher` | Cloning, Dockerizing and iterating GitHub repos from the terminal with Claude Code (`scripts/github_claude_launcher.sh`, `scripts/claude_api_runner.py`). |
 
 ## Tools
 

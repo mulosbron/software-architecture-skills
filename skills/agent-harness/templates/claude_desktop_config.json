@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "automanus-sales": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@automanus/mcp-server"
+      ],
+      "env": {
+        "AUTOMANUS_API_KEY": "<YOUR_API_KEY_HERE>"
+      }
+    },
+    "notion-api": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "OPENAPI_MCP_HEADERS": "{\"Authorization\": \"Bearer <YOUR_NOTION_TOKEN>\", \"Notion-Version\": \"2022-06-28\"}"
+      }
+    }
+  }
+}
